@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use App\Models\Apartment;
 class User extends Authenticatable
 {
  
@@ -18,6 +18,12 @@ class User extends Authenticatable
         'id_photo_path',
         'personal_photo_path'
     ];
+    protected $table = 'users';
+
+    public function apartments()
+{
+    return $this->hasMany(Apartment::class, 'owner_id');
+}
 
     protected $hidden = [
         'password', 'remember_token',

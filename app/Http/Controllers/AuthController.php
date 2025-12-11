@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class UserController extends Controller
+class AuthController extends Controller
 {
     public function register(Request $request)
     {
@@ -55,7 +55,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'phone' => 'required',
+            'phone' => 'required|string',
             'password' => 'required|string',
         ]);
 

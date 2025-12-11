@@ -9,6 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -23,6 +24,12 @@ return new class extends Migration
             $table->string('id_photo_path')->nullable();
             $table->string('personal_photo_path')->nullable();
             
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('role', ['renter', 'owner', 'admin'])->default('renter');
+             
+
+
+
     
         });
         Schema::create('images', function (Blueprint $table) {
