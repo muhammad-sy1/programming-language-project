@@ -24,7 +24,7 @@ class ApartmentController extends Controller
     {
         $apartment = $request->validate([
             'description'=>"string",
-            'governorate'=>'required',
+            'governorate'=>'required|string',
             'city'=>'required|string',
             'price'=>'required|integer'
 

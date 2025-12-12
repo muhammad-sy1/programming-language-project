@@ -8,27 +8,25 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+
+    /**
+     * عرض جميع المستخدمين (بجميع الحالات)
+     */
+    public function index()
+    {
+        $users = User::all();
+        return response()->json([
+            'success' => true,
+            'data' => $users
+        ]);
+    }
     /**
      * عرض جميع المستخدمين الذين ينتظرون الموافقة
      */
     public function pendingUsers()
     {
-        $users = User::where('status', 'pending')
-            ->with(['apartments' => function ($query) {
-                $query->select('id', 'owner_id', 'title');
-            }])
-            ->get([
-                'id',
-                'first_name',
-                'last_name',
-                'phone',
-                'email',
-                'role',
-                'status',
-                'profile_image',
-                'id_image',
-                'created_at'
-            ]);
+        $users = User::where('status', 'pending')->get();
 
         return response()->json([
             'success' => true,
@@ -41,22 +39,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['apartments' => function ($query) {
-            $query->select('id', 'owner_id', 'title', 'governorate', 'city', 'price');
-        }])
-            ->findOrFail($id, [
-                'id',
-                'first_name',
-                'last_name',
-                'phone',
-                'email',
-                'birth_date',
-                'role',
-                'status',
-                'profile_image',
-                'id_image',
-                'created_at'
-            ]);
+        $user = User::findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -109,10 +92,9 @@ class UserController extends Controller
         }
 
         $user->status = 'rejected';
-        $user->rejection_reason = $request->reason; // إذا أردت إضافة حقل للسبب
         $user->save();
 
-        // هنا يمكنك إضافة إشعار للمستخدم مع سبب الرفض
+        //  إضافة إشعار للمستخدم مع سبب الرفض
 
         return response()->json([
             'success' => true,
@@ -121,30 +103,6 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * عرض جميع المستخدمين (بجميع الحالات)
-     */
-    public function index()
-    {
-        $users = User::with(['apartments' => function ($query) {
-            $query->select('id', 'owner_id', 'title');
-        }])
-            ->get([
-                'id',
-                'first_name',
-                'last_name',
-                'phone',
-                'email',
-                'role',
-                'status',
-                'created_at'
-            ]);
-
-        return response()->json([
-            'success' => true,
-            'data' => $users
-        ]);
-    }
 
     /**
      * حذف مستخدم
