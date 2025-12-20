@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Apartment;
-use function Pest\Laravel\json;
+use Illuminate\Http\Request;
 
 class ApartmentController extends Controller
 {
@@ -14,7 +13,8 @@ class ApartmentController extends Controller
     public function index()
     {
         $apartment = Apartment::all();
-        return response()->json($apartment,200);
+
+        return response()->json($apartment, 200);
     }
 
     /**
@@ -23,14 +23,15 @@ class ApartmentController extends Controller
     public function store(Request $request)
     {
         $apartment = $request->validate([
-            'description'=>"string",
-            'governorate'=>'required|string',
-            'city'=>'required|string',
-            'price'=>'required|integer'
+            'description' => 'string',
+            'governorate' => 'required|string',
+            'city' => 'required|string',
+            'price' => 'required|integer',
 
-       ]);
-       Apartment::create($apartment,201);
-       return response()->json($apartment,201);
+        ]);
+        Apartment::create($apartment, 201);
+
+        return response()->json($apartment, 201);
     }
 
     /**
@@ -39,8 +40,9 @@ class ApartmentController extends Controller
     public function show(string $id)
     {
         $apartment = Apartment::findOrFail($id);
-        return response()->json($apartment,200);
-        
+
+        return response()->json($apartment, 200);
+
     }
 
     /**
@@ -48,10 +50,10 @@ class ApartmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         $apartment = Apartment::findOrFail($id);
-         $apartment->update ($request->only('governorate','city','price','description'));
-        
-         return response()->json($apartment, 200);
+        $apartment = Apartment::findOrFail($id);
+        $apartment->update($request->only('governorate', 'city', 'price', 'description'));
+
+        return response()->json($apartment, 200);
     }
 
     /**
@@ -59,11 +61,10 @@ class ApartmentController extends Controller
      */
     public function destroy(string $id)
     {
-         $apartment = Apartment::findOrFail($id);
-         $apartment->delete();
-         return response()->json('deleted', 204);
+        $apartment = Apartment::findOrFail($id);
+        $apartment->delete();
+
+        return response()->json('deleted', 204);
 
     }
 }
-
-
