@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-   public function store(Request $request)
+    public function store(Request $request)
     {
+        $user = $request->user();
+
         $data = $request->validate([
             'apartment_id' => 'required|exists:apartments,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'start_date'   => 'required|date',
+            'end_date'     => 'required|date|after:start_date',
         ]);
 
         // منع التعارض
@@ -30,34 +32,48 @@ class BookingController extends Controller
             ], 409);
         }
 
-        $booking = Booking::create(array_merge([
-            'user_id' => auth()->id(),
-        ], $data));
+        $booking = Booking::create([
+            'user_id'      => $user->id,
+            'apartment_id' => $data['apartment_id'],
+            'start_date'   => $data['start_date'],
+            'end_date'     => $data['end_date'],
+        ]);
 
         return response()->json($booking, 201);
     }
 
-        public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        $booking = Booking::where('user_id', auth()->id())->findOrFail($id);
+        $user = $request->user();
 
-        $booking->update($request->only('start_date', 'end_date'));
+        $booking = Booking::where('user_id', $user->id)->findOrFail($id);
+
+        $booking->update(
+            $request->only('start_date', 'end_date')
+        );
 
         return response()->json($booking, 200);
     }
 
-    public function cancel($id)
+    public function cancel(Request $request, $id)
     {
-        $booking = Booking::where('user_id', auth()->id())->findOrFail($id);
+        $user = $request->user();
+
+        $booking = Booking::where('user_id', $user->id)->findOrFail($id);
+
         $booking->update(['status' => 'cancelled']);
 
-        return response()->json(['message' => 'Booking cancelled'], 200);
+        return response()->json([
+            'message' => 'Booking cancelled'
+        ], 200);
     }
 
-    public function myBookings()
+    public function myBookings(Request $request)
     {
+        $user = $request->user();
+
         return response()->json(
-            Booking::where('user_id', auth()->id())
+            Booking::where('user_id', $user->id)
                 ->with('apartment')
                 ->get(),
             200

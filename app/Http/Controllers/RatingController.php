@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
-use Illuminate\Http\Request;
 use App\Models\Rating;
+use Illuminate\Http\Request;
 
 class RatingController extends Controller
 {
     public function store(Request $request, $bookingId)
     {
+        $user = $request->user(); 
+
         $booking = Booking::with('apartment')->findOrFail($bookingId);
 
-        if ($booking->apartment->user_id !== auth()->id()) {
+        if ($booking->apartment->user_id !== $user->id) {
             abort(403);
         }
 
@@ -21,12 +23,13 @@ class RatingController extends Controller
             'comment' => 'nullable|string'
         ]);
 
-            $rating = Rating::create(array_merge([
-                'booking_id' => $bookingId,
-                'owner_id' => auth()->id(),
-            ], $data));
+        $rating = Rating::create([
+            'booking_id' => $bookingId,
+            'owner_id'   => $user->id,
+            'rating'     => $data['rating'],
+            'comment'    => $data['comment'] ?? null,
+        ]);
 
         return response()->json($rating, 201);
     }
 }
-
