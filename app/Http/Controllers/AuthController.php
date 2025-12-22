@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -26,13 +26,13 @@ class AuthController extends Controller
 
         if ($request->hasFile('id_photo')) {
             $idPhoto = $request->file('id_photo');
-            $idPhotoName = 'id_photo_' . Str::random(20) . '.' . $idPhoto->getClientOriginalExtension();
+            $idPhotoName = 'id_photo_'.Str::random(20).'.'.$idPhoto->getClientOriginalExtension();
             $idPhotoPath = $idPhoto->storeAs('users/id_photos', $idPhotoName, 'public');
         }
 
         if ($request->hasFile('personal_photo')) {
             $personalPhoto = $request->file('personal_photo');
-            $personalPhotoName = 'personal_photo_' . Str::random(20) . '.' . $personalPhoto->getClientOriginalExtension();
+            $personalPhotoName = 'personal_photo_'.Str::random(20).'.'.$personalPhoto->getClientOriginalExtension();
             $personalPhotoPath = $personalPhoto->storeAs('users/personal_photos', $personalPhotoName, 'public');
         }
 
@@ -61,9 +61,9 @@ class AuthController extends Controller
 
         $user = User::where('phone', $request->phone)->firstOrFail();
 
-        if (!Hash::check($request->password, $user->password)) {
+        if (! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Invalid phone or password'
+                'message' => 'Invalid phone or password',
             ], 401);
         }
 
@@ -72,7 +72,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'User login successfully',
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ], 200);
     }
 

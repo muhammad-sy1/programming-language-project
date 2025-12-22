@@ -6,11 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Apartment extends Model
 {
-    protected $table = 'Apartments';
-    protected $fillable = ['governorate', 'city', 'description', 'price'];
+    // table name should match the migration (lowercase 'apartments')
+    protected $table = 'apartments';
 
-    public function owner()
+    protected $fillable = [
+        'governorate',
+        'city',
+        'price',
+        'description',
+        'user_id',
+    ];
+
+    public function bookings()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->hasMany(Booking::class);
     }
 }

@@ -10,12 +10,29 @@ class ApartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $apartment = Apartment::all();
+   public function index(Request $request)
+{
+    $query = Apartment::query();
 
-        return response()->json($apartment, 200);
+    if ($request->filled('governorate')) {
+        $query->where('governorate', $request->governorate);
     }
+
+    if ($request->filled('city')) {
+        $query->where('city', $request->city);
+    }
+
+    if ($request->filled('min_price')) {
+        $query->where('price', '>=', $request->min_price);
+    }
+
+    if ($request->filled('max_price')) {
+        $query->where('price', '<=', $request->max_price);
+    }
+
+    return response()->json($query->get(), 200);
+}
+
 
     /**
      * Store a newly created resource in storage.

@@ -8,19 +8,19 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-
-
     /**
      * عرض جميع المستخدمين (بجميع الحالات)
      */
     public function index()
     {
         $users = User::all();
+
         return response()->json([
             'success' => true,
-            'data' => $users
+            'data' => $users,
         ]);
     }
+
     /**
      * عرض جميع المستخدمين الذين ينتظرون الموافقة
      */
@@ -30,7 +30,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $users
+            'data' => $users,
         ]);
     }
 
@@ -43,7 +43,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $user
+            'data' => $user,
         ]);
     }
 
@@ -57,7 +57,7 @@ class UserController extends Controller
         if ($user->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'User is not in pending status'
+                'message' => 'User is not in pending status',
             ], 400);
         }
 
@@ -69,7 +69,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User approved successfully',
-            'data' => $user
+            'data' => $user,
         ]);
     }
 
@@ -79,7 +79,7 @@ class UserController extends Controller
     public function reject($id, Request $request)
     {
         $request->validate([
-            'reason' => 'nullable|string'
+            'reason' => 'nullable|string',
         ]);
 
         $user = User::findOrFail($id);
@@ -87,7 +87,7 @@ class UserController extends Controller
         if ($user->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'User is not in pending status'
+                'message' => 'User is not in pending status',
             ], 400);
         }
 
@@ -99,10 +99,9 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User rejected successfully',
-            'data' => $user
+            'data' => $user,
         ]);
     }
-
 
     /**
      * حذف مستخدم
@@ -115,7 +114,7 @@ class UserController extends Controller
         if ($user->role === 'admin') {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete admin user'
+                'message' => 'Cannot delete admin user',
             ], 403);
         }
 
@@ -123,7 +122,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'User deleted successfully'
+            'message' => 'User deleted successfully',
         ]);
     }
 }

@@ -9,7 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\Apartment;
 class User extends Authenticatable
 {
- 
+
     use HasApiTokens, Notifiable,HasFactory;
 
     protected $fillable = [
