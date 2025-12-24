@@ -5,125 +5,108 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-
-
-    /**
-     * عرض جميع المستخدمين (بجميع الحالات)
-     */
     public function index()
     {
-        $users = User::all();
-        return response()->json([
-            'success' => true,
-            'data' => $users
-        ]);
+        $users = User::orderBy('created_at', 'desc')->paginate(10);
+        $pendingCount = User::where('status', 'pending')->count();
+        
+        return view('admin.users.index', compact('users', 'pendingCount'));
     }
-    /**
-     * عرض جميع المستخدمين الذين ينتظرون الموافقة
-     */
+    
     public function pendingUsers()
     {
-        $users = User::where('status', 'pending')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $users
-        ]);
+        $pendingUsers = User::where('status', 'pending')->get();
+        $pendingCount = $pendingUsers->count();
+        
+        return view('admin.users.pending', compact('pendingUsers', 'pendingCount'));
     }
-
-    /**
-     * عرض تفاصيل مستخدم معين
-     */
-    public function show($id)
+    
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => $user
-        ]);
+        return view('admin.users.show', compact('user'));
     }
-
-    /**
-     * الموافقة على مستخدم
-     */
-    public function approve($id)
-    {
-        $user = User::findOrFail($id);
-
-        if ($user->status !== 'pending') {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not in pending status'
-            ], 400);
-        }
-
-        $user->status = 'approved';
-        $user->save();
-
-        // هنا يمكنك إضافة إشعار للمستخدم
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User approved successfully',
-            'data' => $user
-        ]);
+    
+    public function approve(User $user)
+{
+    $user->status = 'approved';
+    $user->status_updated_at = now();
+    
+    $saved = $user->save();
+    
+    if ($saved) {
+        return back()->with('success', 'تمت الموافقة على المستخدم بنجاح');
+    } else {
+        return back()->with('error', 'فشل في تحديث حالة المستخدم');
     }
-
-    /**
-     * رفض مستخدم
-     */
-    public function reject($id, Request $request)
+}
+    
+    public function reject(User $user)
     {
-        $request->validate([
-            'reason' => 'nullable|string'
-        ]);
-
-        $user = User::findOrFail($id);
-
-        if ($user->status !== 'pending') {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not in pending status'
-            ], 400);
-        }
-
         $user->status = 'rejected';
-        $user->save();
-
-        //  إضافة إشعار للمستخدم مع سبب الرفض
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User rejected successfully',
-            'data' => $user
-        ]);
+    $user->status_updated_at = now();
+    
+    $saved = $user->save();
+        
+        return back()->with('success', 'تم رفض المستخدم بنجاح');
     }
-
-
-    /**
-     * حذف مستخدم
-     */
-    public function destroy($id)
+    
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
-
-        // لا يمكن حذف مدير آخر
-        if ($user->role === 'admin') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cannot delete admin user'
-            ], 403);
-        }
-
+        $this->deleteUserFiles($user);
+        
         $user->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User deleted successfully'
-        ]);
+        
+        return redirect()->route('admin.users.index')
+            ->with('success', 'تم حذف المستخدم بنجاح');
     }
+    
+    /**
+     * حذف ملفات المستخدم من التخزين
+     */
+    private function deleteUserFiles(User $user)
+    {
+        if ($user->personal_photo_path) {
+            $path = str_replace('storage/', '', $user->personal_photo_path);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+        
+        if ($user->id_photo_path) {
+            $path = str_replace('storage/', '', $user->id_photo_path);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+        
+       
+    }
+public function checkImage(Request $request)
+{
+    $request->validate([
+        'path' => 'required|string',
+        'user_id' => 'required|exists:users,id',
+        'type' => 'required|in:personal,id'
+    ]);
+    
+    $exists = file_exists($request->path);
+    
+    Log::info('Image check result:', [
+        'path' => $request->path,
+        'exists' => $exists,
+        'user_id' => $request->user_id,
+        'type' => $request->type
+    ]);
+    
+    return response()->json([
+        'exists' => $exists,
+        'path' => $request->path
+    ]);
+}
+
 }

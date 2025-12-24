@@ -16,7 +16,22 @@ class User extends Authenticatable
         'first_name', 'last_name',
         'birth_date', 'password' ,'phone',
         'id_photo_path',
-        'personal_photo_path'
+        'personal_photo_path',
+      'status_updated_at',
+
+    ];
+      protected $dates = [
+        'created_at',
+        'updated_at',
+        'email_verified_at',
+        'status_updated_at', 
+    ];
+    
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'status_updated_at' => 'datetime', 
     ];
     protected $table = 'users';
 

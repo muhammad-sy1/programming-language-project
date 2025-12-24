@@ -6,26 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->string('city');
+            // $table->foreignId('owner_id')->nullable()
+            //       ->constrained('users')
+            //       ->onDelete('cascade');
+            
+            $table->string('description');
             $table->string('governorate');
-            $table->string('description')->nullable();
-            $table->string('price');
+            $table->string('city');
+            $table->integer('price');
+            $table->string('photo_path')->nullable();
             $table->boolean('is_available')->default(true);
-
+            
+            // التواريخ
+            $table->timestamps();
+            
+           
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('apartments');

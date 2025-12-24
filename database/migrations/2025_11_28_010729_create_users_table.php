@@ -23,24 +23,14 @@ return new class extends Migration
             $table->timestamps();
             $table->string('id_photo_path')->nullable();
             $table->string('personal_photo_path')->nullable();
-            
+
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->enum('role', ['renter', 'owner', 'admin'])->default('renter');
-             
+            $table->enum('role', ['user', 'admin'])->default('user');
 
-
-
-    
+            $table->timestamp('status_updated_at')->nullable();
+            $table->timestamp('last_login_at')->nullable();
         });
-        Schema::create('images', function (Blueprint $table) {
-            $table->id();
-            $table->string('filename');
-            $table->string('original_name');
-            $table->string('path');
-            $table->string('mime_type');
-            $table->unsignedBigInteger('size');
-            $table->timestamps();
-        });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
