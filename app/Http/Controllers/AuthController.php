@@ -16,7 +16,7 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
             'birth_date' => 'required',
-            'phone' => 'required|unique:users,phone|integer',
+            'phone' => 'required|unique:users,phone|string',
             'id_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'personal_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -46,9 +46,12 @@ class AuthController extends Controller
             'personal_photo_path' => $personalPhotoPath,
         ]);
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
-            'message' => 'User Registered Successfully now your request is waiting for the admin to approve',
+            'message' => 'User Registered Successfully, now your request is waiting for the admin to approve',
             'user' => $user,
+            'token' => $token,
         ], 201);
     }
 

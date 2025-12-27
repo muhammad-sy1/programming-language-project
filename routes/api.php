@@ -1,9 +1,10 @@
-    <?php
+<?php
 
-    use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +12,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// المصادقة
+// Authentication Routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -20,7 +21,7 @@ Route::apiResource('/apartment', ApartmentController::class);
 
 Route::middleware('IsAdmin')->group(function () {
 
-    // إدارة المستخدمين
+    // user management routes
     Route::get('admin/users/pending', [UserController::class, 'pendingUsers']);
     Route::get('admin/users', [UserController::class, 'index']);
     Route::get('admin/users/{user}', [UserController::class, 'show']);
@@ -28,7 +29,7 @@ Route::middleware('IsAdmin')->group(function () {
     Route::post('admin/users/{user}/reject', [UserController::class, 'reject']);
     Route::delete('admin/users/{user}', [UserController::class, 'destroy']);
 
-    // إحصائيات (بكملها بعدين)
+    // dashboard stats route
     //   Route::get('/stats', [DashboardController::class, 'stats']);
 
 });

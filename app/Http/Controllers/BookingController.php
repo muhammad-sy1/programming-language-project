@@ -13,8 +13,8 @@ class BookingController extends Controller
 
         $data = $request->validate([
             'apartment_id' => 'required|exists:apartments,id',
-            'start_date'   => 'required|date',
-            'end_date'     => 'required|date|after:start_date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
         ]);
 
         // منع التعارض
@@ -22,21 +22,21 @@ class BookingController extends Controller
             ->where('status', 'active')
             ->where(function ($q) use ($data) {
                 $q->whereBetween('start_date', [$data['start_date'], $data['end_date']])
-                  ->orWhereBetween('end_date', [$data['start_date'], $data['end_date']]);
+                    ->orWhereBetween('end_date', [$data['start_date'], $data['end_date']]);
             })
             ->exists();
 
         if ($conflict) {
             return response()->json([
-                'message' => 'Apartment already booked in this period'
+                'message' => 'Apartment already booked in this period',
             ], 409);
         }
 
         $booking = Booking::create([
-            'user_id'      => $user->id,
+            'user_id' => $user->id,
             'apartment_id' => $data['apartment_id'],
-            'start_date'   => $data['start_date'],
-            'end_date'     => $data['end_date'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
         ]);
 
         return response()->json($booking, 201);
@@ -64,7 +64,7 @@ class BookingController extends Controller
         $booking->update(['status' => 'cancelled']);
 
         return response()->json([
-            'message' => 'Booking cancelled'
+            'message' => 'Booking cancelled',
         ], 200);
     }
 
