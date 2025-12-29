@@ -10,7 +10,7 @@ class ApartmentSeeder extends Seeder
 {
     public function run(): void
     {
-        $owners = User::where('role', 'owner')->get();
+        $owners = User::where('role', 'user')->get();
         
         if ($owners->isEmpty()) {
             $this->command->error('  UsersTableSeederلا يوجد ملاك في قاعدة البيانات! قم بتشغيل  .');

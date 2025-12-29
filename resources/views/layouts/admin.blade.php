@@ -162,11 +162,7 @@
         </div>
         
         <ul class="sidebar-nav nav flex-column">
-            <li class="nav-item">
-                <a href="{{ url('admin/dashboard') }}" class="nav-link">
-                    <i class="fas fa-tachometer-alt"></i> الرئيسية
-                </a>
-            </li>
+          
             <li class="nav-item">
                 <a href="{{ url('admin/users') }}" class="nav-link {{ request()->is('admin/users') ? 'active' : '' }}">
                     <i class="fas fa-users"></i> جميع المستخدمين
@@ -180,11 +176,7 @@
                     @endif
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-cog"></i> الإعدادات
-                </a>
-            </li>
+          
             <li class="nav-item mt-4">
                 <a href="{{ route('logout') }}" class="nav-link text-danger"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

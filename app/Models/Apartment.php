@@ -23,21 +23,9 @@ class Apartment extends Model
         'is_available' => 'boolean'
     ];
 
-    // العلاقة مع المالك
-    public function owner()
-    {
-    //    return $this->belongsTo(User::class, 'owner_id');
-    }
-
-    // العلاقة مع الحجوزات
+  
     public function bookings()
     {
- //       return $this->hasMany(Booking::class);
-    }
-
-    // العلاقة مع التقييمات
-    public function reviews()
-    {
-//        return $this->hasMany(Review::class);
+        return $this->hasMany(Booking::class);
     }
 }
