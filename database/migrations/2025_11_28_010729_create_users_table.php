@@ -26,6 +26,7 @@ return new class extends Migration
             // $table->enum('role', ['renter', 'owner', 'admin'])->default('renter');
 
         });
+
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('filename');
@@ -55,6 +56,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+
     public function down(): void
     {
         Schema::dropIfExists('images');

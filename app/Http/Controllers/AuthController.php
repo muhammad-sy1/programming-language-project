@@ -46,12 +46,12 @@ class AuthController extends Controller
             'personal_photo_path' => $personalPhotoPath,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'User Registered Successfully, now your request is waiting for the admin to approve',
             'user' => $user,
-            'token' => $token,
+            // 'token' => $token,
         ], 201);
     }
 
