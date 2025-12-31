@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Apartment extends Model
 {
@@ -23,9 +24,35 @@ class Apartment extends Model
         'is_available' => 'boolean'
     ];
 
-  
+
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    // أضف هذه العلاقات
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+            ->withTimestamps();
+    }
+
+    /**
+     * التحقق إذا كانت الشقة مفضلة للمستخدم الحالي
+     */
+    public function isFavoritedBy($userId = null)
+    {
+        if (!$userId && Auth::check()) {
+            $userId = Auth::id();
+        }
+
+        return $this->favorites()
+            ->where('user_id', $userId)
+            ->exists();
     }
 }
