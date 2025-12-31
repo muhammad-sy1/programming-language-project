@@ -132,25 +132,6 @@ class FavoriteController extends Controller
         ]);
     }
 
-    
-    public function checkFavorite($apartmentId)
-    {
-        $userId = Auth::id();
-        $isFavorite = Favorite::isFavorite($userId, $apartmentId);
-
-        return response()->json([
-            'success' => true,
-            'is_favorite' => $isFavorite
-        ]);
-    }
-
-   
-    
-
-    
-   
-
-    
     public function clearAllFavorites()
     {
         $userId = Auth::id();

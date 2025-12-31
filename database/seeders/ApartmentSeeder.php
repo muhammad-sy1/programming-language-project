@@ -19,36 +19,29 @@ class ApartmentSeeder extends Seeder
 
         $apartments = [
             [
-                'title' => 'شقة فاخرة 3 غرف في العاصمة',
+                'description' => 'شقة فاخرة 3 غرف في العاصمة',
                 'governorate' => 'hama',
                 'city' => 'hama',
                 'price' => 4500,
-                'bedrooms' => 3,
-                'bathrooms' => 2,
-                'owner_id' => $owners[1]->id, // aghiad asaad
+                'owner_id' => $owners[1]->id, // aghiad 
                 'is_available' =>  true,
                 'created_at' => now(),
             ],
             [
-                'title' => 'شقة عائلية 4 غرف  ',
+                'description' => 'شقة عائلية 4 غرف  ',
                 'governorate' => 'aleppo',
                 'city' => 'hama',
                 'price' => 3800,
-                'bedrooms' => 4,
-                'bathrooms' => 3,
-                'owner_id' => $owners[1]->id, //  aghiad
-                
+                'owner_id' => $owners[2]->id, //  aghiad
                 'is_available' => true,
                 'created_at' => now(),
             ],
             [
-                'title' => 'شقة اقتصادية 2 غرفة  ',
+                'description' => 'شقة اقتصادية 2 غرفة  ',
                 'governorate' => 'daraa',
                 'city' => 'daraa',
                 'price' => 2000,
-                'bedrooms' => 2,
-                'bathrooms' => 1,
-                'owner_id' => $owners[1]->id, // rida
+                'owner_id' => $owners[3]->id, // rida
                 'is_available' => true,
                 'created_at' => now(),
             ],
