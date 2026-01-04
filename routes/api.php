@@ -9,21 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+});
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login'])->middleware('IsApproved');
+Route::post('/login', [AuthController::class, 'login'])->middleware('check.approved:18');
 
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
-    // عرض الشقق مع الفلاتر
+    // display all apartments
     Route::get('/apartments', [ApartmentController::class, 'index']);
     Route::get('/apartments/{id}', [ApartmentController::class, 'show']);
+    Route::get('/apartments/{apartment}/bookings', [ApartmentController::class, 'showApparBookings']);
     Route::post('/apartments', [ApartmentController::class, 'store']);
 
 
@@ -41,8 +42,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/favorites/remove', [FavoriteController::class, 'removeFromFavorites']);
     //هاد مشان الزر تبع الاضافة والازالة بنفس الكبسة
     Route::post('/favorites/toggle', [FavoriteController::class, 'toggleFavorite']);
-    
-    
+
+
     Route::get('/favorites', [FavoriteController::class, 'getUserFavorites']);
     Route::delete('/favorites/clear', [FavoriteController::class, 'clearAllFavorites']);
 

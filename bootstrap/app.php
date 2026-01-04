@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'IsApproved' => CheckStatusMiddleware::class,
+            'check.approved' => CheckStatusMiddleware::class,
             'IsAdmin' => AdminMiddleware::class,
         ]);
     })

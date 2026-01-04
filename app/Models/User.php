@@ -44,6 +44,9 @@ class User extends Authenticatable
         return $this->hasMany(Apartment::class, 'owner_id');
     }
 
+
+    
+
     protected $hidden = [
         'password',
         'remember_token',

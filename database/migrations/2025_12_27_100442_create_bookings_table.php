@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-            $table->id();
+            $table->id();// pivot table 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // المستأجر
             $table->foreignId('apartment_id')->constrained()->cascadeOnDelete();
             $table->date('start_date');

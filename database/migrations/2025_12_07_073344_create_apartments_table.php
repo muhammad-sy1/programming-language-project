@@ -13,18 +13,17 @@ return new class extends Migration
             // $table->foreignId('owner_id')->nullable()
             //       ->constrained('users')
             //       ->onDelete('cascade');
-            
+
             $table->string('description');
             $table->string('governorate');
             $table->string('city');
             $table->integer('price');
             $table->string('photo_path')->nullable();
             $table->boolean('is_available')->default(true);
-            
+
             // التواريخ
             $table->timestamps();
-            
-           
+
         });
     }
 
