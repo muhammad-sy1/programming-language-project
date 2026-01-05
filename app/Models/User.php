@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Apartment;
 
 class User extends Authenticatable
 {
-
-    use HasApiTokens, Notifiable, HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'first_name',
@@ -24,6 +22,7 @@ class User extends Authenticatable
         'status_updated_at',
 
     ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -37,6 +36,7 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
         'status_updated_at' => 'datetime',
     ];
+
     protected $table = 'users';
 
     public function apartments()
@@ -44,21 +44,21 @@ class User extends Authenticatable
         return $this->hasMany(Apartment::class, 'owner_id');
     }
 
-
-    
-
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     public function getIdPhotoUrlAttribute()
     {
-        return $this->id_photo_path ? asset('storage/' . $this->id_photo_path) : null;
+        return $this->id_photo_path ? asset('storage/'.$this->id_photo_path) : null;
     }
+
     public function getPersonalPhotoUrlAttribute()
     {
-        return $this->personal_photo_path ? asset('storage/' . $this->personal_photo_path) : null;
+        return $this->personal_photo_path ? asset('storage/'.$this->personal_photo_path) : null;
     }
+
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
@@ -69,4 +69,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Apartment::class, 'favorites')
             ->withTimestamps();
     }
+
+    // public function profile()
+    // {
+    //     return $this->hasOne(Profile::class);
+    // }
 }

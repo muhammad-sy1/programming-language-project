@@ -5,18 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Favorite;
 use App\Models\Apartment;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class FavoriteController extends Controller
 {
-    
+
     public function addToFavorites(Request $request)
     {
         $request->validate([
             'apartment_id' => 'required|exists:apartments,id'
         ]);
 
-        $userId = Auth::id();
+        $userId = auth('sanctum')->id();
         $apartmentId = $request->apartment_id;
 
         $existingFavorite = Favorite::where('user_id', $userId)
@@ -36,16 +38,13 @@ class FavoriteController extends Controller
             'apartment_id' => $apartmentId
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'تم إضافة الشقة إلى المفضلة بنجاح',
-            'data' => $favorite,
-            'is_favorite' => true,
-            'favorites_count' => Favorite::countUserFavorites($userId)
-        ], 201);
+         return success(
+                [  'favorites_count' => Favorite::countUserFavorites($userId)],
+                HttpResponse::HTTP_CREATED 
+            );
     }
 
-    
+
     public function removeFromFavorites(Request $request)
     {
         $request->validate([
@@ -60,12 +59,9 @@ class FavoriteController extends Controller
             ->delete();
 
         if ($deleted) {
-            return response()->json([
-                'success' => true,
-                'message' => 'تم إزالة الشقة من المفضلة',
-                'is_favorite' => false,
-                'favorites_count' => Favorite::countUserFavorites($userId)
-            ]);
+            return success(
+                [  'favorites_count' => Favorite::countUserFavorites($userId)]
+            );
         }
 
         return response()->json([
@@ -75,7 +71,7 @@ class FavoriteController extends Controller
         ], 404);
     }
 
-    
+
     public function toggleFavorite(Request $request)
     {
         $request->validate([
@@ -110,7 +106,7 @@ class FavoriteController extends Controller
         ]);
     }
 
-   
+
     public function getUserFavorites()
     {
         $userId = Auth::id();

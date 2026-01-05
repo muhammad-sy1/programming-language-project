@@ -17,17 +17,21 @@ class Apartment extends Model
         'city',
         'price',
         'photo_path',
-        'is_available'
+        'is_available',
     ];
 
     protected $casts = [
-        'is_available' => 'boolean'
+        'is_available' => 'boolean',
     ];
-
 
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     // أضف هذه العلاقات
@@ -47,7 +51,7 @@ class Apartment extends Model
      */
     public function isFavoritedBy($userId = null)
     {
-        if (!$userId && Auth::check()) {
+        if (! $userId && Auth::check()) {
             $userId = Auth::id();
         }
 
