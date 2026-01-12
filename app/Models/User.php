@@ -66,4 +66,34 @@ class User extends Authenticatable
         return $this->belongsToMany(Apartment::class, 'favorites')
             ->withTimestamps();
     }
+    ////////////////////messages
+    public function conversationsAsSender()
+{
+    return $this->hasMany(Conversation::class, 'sender_id');
+}
+
+public function conversationsAsReceiver()
+{
+    return $this->hasMany(Conversation::class, 'receiver_id');
+}
+
+public function sentMessages()
+{
+    return $this->hasMany(Message::class, 'sender_id');
+}
+
+public function getConversationsAttribute()
+{
+    return Conversation::where('sender_id', $this->id)
+        ->orWhere('receiver_id', $this->id)
+        ->get();
+}
+
+public function unreadConversationsCount()
+{
+    return Conversation::where(function($q) {
+        $q->where('sender_id', $this->id)->where('is_sender_read', false)
+          ->orWhere('receiver_id', $this->id)->where('is_receiver_read', false);
+    })->count();
+}
 }

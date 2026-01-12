@@ -55,4 +55,32 @@ class Apartment extends Model
             ->where('user_id', $userId)
             ->exists();
     }
+    ///////////////////messages
+    public function owner()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
+public function conversations()
+{
+    return $this->hasMany(Conversation::class);
+}
+
+public function hasConversationWithUser($userId)
+{
+    return $this->conversations()
+        ->where('sender_id', $userId)
+        ->orWhere('receiver_id', $userId)
+        ->exists();
+}
+
+public function getUserConversation($userId)
+{
+    return $this->conversations()
+        ->where(function($query) use ($userId) {
+            $query->where('sender_id', $userId)
+                  ->orWhere('receiver_id', $userId);
+        })
+        ->first();
+}
 }
