@@ -57,7 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/conversations/{conversation}', [ChatController::class, 'getConversation']);
     Route::put('/conversations/{conversation}/read', [ChatController::class, 'markConversationAsRead']);
     Route::delete('/conversations/{conversation}', [ChatController::class, 'deleteConversation']);
-    Route::get('/conversations/search', [ChatController::class, 'searchConversations']);
     Route::get('/conversations/latest/messages', [ChatController::class, 'getLatestMessages']);
     
     // الرسائل

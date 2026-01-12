@@ -133,12 +133,7 @@ class ChatController extends Controller
             $attachmentPath = null;
             $attachmentType = null;
             
-            if ($request->hasFile('attachment')) {
-                $file = $request->file('attachment');
-                $fileName = 'chat_' . time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-                $attachmentPath = $file->storeAs('chat/attachments', $fileName, 'public');
-                $attachmentType = $this->getAttachmentType($file);
-            }
+           
 
             $message = Message::create([
                 'conversation_id' => $conversation->id,
@@ -183,9 +178,7 @@ class ChatController extends Controller
         }
     }
 
-    /**
-     * جلب محادثات المستخدم
-     */
+   
     public function getUserConversations(Request $request)
     {
         $userId = Auth::id();
@@ -236,9 +229,7 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * جلب محادثة معينة
-     */
+  
     public function getConversation($conversationId)
     {
         $userId = Auth::id();
@@ -272,9 +263,7 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * البحث عن محادثة مع شقة
-     */
+    
     public function findConversation($apartmentId)
     {
         $userId = Auth::id();
@@ -306,9 +295,7 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * حذف محادثة
-     */
+    
     public function deleteConversation($conversationId)
     {
         $userId = Auth::id();
@@ -352,9 +339,7 @@ class ChatController extends Controller
         }
     }
 
-    /**
-     * عدد الرسائل غير المقروءة
-     */
+    
     public function getUnreadCount()
     {
         $userId = Auth::id();
@@ -370,9 +355,7 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * تحديث حالة القراءة
-     */
+  
     public function markConversationAsRead($conversationId)
     {
         $userId = Auth::id();
@@ -390,51 +373,6 @@ class ChatController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'تم تحديث حالة القراءة'
-        ]);
-    }
-
-   
-    
-
-    /**
-     * البحث في محادثات المستخدم
-     */
-    public function searchConversations(Request $request)
-    {
-        $request->validate([
-            'keyword' => 'required|string|min:2'
-        ]);
-
-        $userId = Auth::id();
-        $keyword = $request->keyword;
-
-        $conversations = Conversation::with(['apartment', 'sender', 'receiver', 'lastMessage'])
-            ->where(function($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                      ->orWhere('receiver_id', $userId);
-            })
-            ->where(function($query) use ($keyword) {
-                $query->where('subject', 'LIKE', '%' . $keyword . '%')
-                      ->orWhereHas('apartment', function($q) use ($keyword) {
-                          $q->where('title', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('address', 'LIKE', '%' . $keyword . '%');
-                      })
-                      ->orWhereHas('sender', function($q) use ($keyword) {
-                          $q->where('name', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('email', 'LIKE', '%' . $keyword . '%');
-                      })
-                      ->orWhereHas('receiver', function($q) use ($keyword) {
-                          $q->where('name', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('email', 'LIKE', '%' . $keyword . '%');
-                      });
-            })
-            ->orderBy('last_message_at', 'desc')
-            ->paginate(20);
-
-        return response()->json([
-            'success' => true,
-            'conversations' => $conversations,
-            'keyword' => $keyword
         ]);
     }
 
@@ -470,22 +408,6 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * وظيفة مساعدة: تحديد نوع المرفق
-     */
-    private function getAttachmentType($file)
-    {
-        $mime = $file->getMimeType();
-        
-        if (str_starts_with($mime, 'image/')) {
-            return 'image';
-        } elseif (str_starts_with($mime, 'application/pdf')) {
-            return 'pdf';
-        } elseif (str_starts_with($mime, 'application/msword') || 
-                  str_starts_with($mime, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
-            return 'document';
-        } else {
-            return 'file';
-        }
-    }
+   
+   
 }
